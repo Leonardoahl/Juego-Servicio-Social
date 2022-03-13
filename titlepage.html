@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+    <script>
+        let app;
+        let titleScreen;
+        let pointerIsDown;
+        let pointerIsOver;
+        const NORMAL = 0xFFFFFF;
+        const OVER = 0x00FF00;
+        const DOWN = 0x023400;
+
+        window.onload = function(){
+            app = new PIXI.Application(
+                {
+                    width: 800,
+                    height: 600,
+                    backgroundColor: 0xAAAAAA,
+                }
+            );
+            
+            document.body.appendChild(app.view);
+
+            //create screen
+            titleScreen = new PIXI.Container();
+
+            app.stage.addChild(titleScreen);
+
+            //set up title screen
+            let redRect = new PIXI.Graphics();
+            redRect.beginFill(0xFF0000);
+            redRect.drawRect(0,0,app.view.width, app.view.height);
+            titleScreen.addChild(redRect);
+
+            let text1 = new PIXI.Text("Go to game");
+            text1.anchor.set(0.5);
+            text1.x = app.view.width / 2;
+            text1.y = app.view.height /2;
+            text1.style = new PIXI.TextStyle({
+                fill: 0x00000,
+                fontSize: 40,
+                fontFamily: "Arial",
+                fontStyle: "bold",
+                stroke: 0xFFFFFF,
+                strokeThickness: 3,
+            });
+
+            let button1 = new PIXI.Graphics();
+            button1.beginFill(NORMAL);
+            button1.drawRect(170, 220, 450, 150);
+            button1.endFill();
+            button1.interactive = true;
+            button1.buttonMode = true;
+            
+            titleScreen.addChild(button1);
+
+            titleScreen.addChild(text1);
+
+            button1.on("pointerup", doPointerUp);
+            button1.on("pointerdown", doPointerDown);
+            button1.on("pointerover", doPointerOver);
+            button1.on("pointerout", doPointerOut);
+            button1.on("pointerupoutside", doPointerUpOutside);
+            
+            app.ticker.add(gameLoop);
+
+
+
+
+        }
+        
+        function gameLoop (){
+
+        }
+
+        function doPointerUp() {
+            if(!pointerIsOver){
+                this.tint = NORMAL;
+            } else{
+                this.tint = OVER;
+            }
+            window.location.href = "index.html";  
+            pointerIsDown = false;
+        }
+
+        function doPointerDown() {
+            this.tint = DOWN;
+            pointerIsDown = true;
+        }
+         
+        function doPointerOver() {
+            if(!pointerIsDown){
+                this.tint = OVER;
+                pointerIsOver = true;
+            }
+           
+            
+        }
+
+        function doPointerOut() {
+            if(!pointerIsDown){
+                this.tint = NORMAL;
+                pointerIsOver = false;
+            }
+            
+        }
+
+        function doPointerUpOutside() {
+            this.tint = NORMAL;
+            pointerIsDown = false;
+            pointerIsOver = false;
+        }
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+    <script src="js/monster.js"></script>
+    <script>
+        let app;
+        let player;
+        let enemy;
+
+        window.onload = function(){
+            app = new PIXI.Application(
+                {
+                    width: 800,
+                    height: 600,
+                    backgroundColor: 0xAAAAAA
+                }
+            );
+            
+            document.querySelector("#gameDiv").appendChild(app.view);
+            
+            app.loader.baseUrl = "imgs";
+            app.loader
+                .add("player", "player.png")    
+                .add("enemy", "player.png");
+                
+            app.loader.onComplete.add(doneLoading);
+            app.loader.load();
+
+        }
+
+        function doneLoading(){
+            createEnemies();
+
+            app.ticker.add(gameLoop);
+        }
+
+        function gameLoop(){
+            player.move();
+            enemy.move();
+        }
+
+        function createEnemies() {
+            player = new Monster(100, 100, app.loader.resources["player"].texture, "player", 200, 6);
+            enemy = new Monster(100, 500, app.loader.resources["player"].texture, "enemy", 100, 10);
+            app.stage.addChild(player);
+            app.stage.addChild(enemy);
+        }
+    </script>
+</head>
+<body>
+    <div id="gameDiv"></div>
+</body>
+</html>

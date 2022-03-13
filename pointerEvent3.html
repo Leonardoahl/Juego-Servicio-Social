@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+    <script>
+        let app;
+        let girl;
+        let pointerIsDown = false;
+        let pointerIsOver = false;
+
+        window.onload = function(){
+            app = new PIXI.Application(
+                {
+                    width: 800,
+                    height: 600,
+                    backgroundColor: 0xAAAAAA
+                }
+            );
+            
+            document.querySelector("#gameDiv").appendChild(app.view);
+
+            app.loader.baseUrl = "sprites";
+            app.loader
+                .add("idle", "girl-normal.png")
+                .add("down", "girl-down.png")
+                .add("over", "girl-over.png")
+                .add("up", "girl-up.png");
+            app.loader.onComplete.add(doneLoading);
+            app.loader.load();
+            
+
+            app.ticker.add(gameLoop);
+        }
+
+        function gameLoop(){
+
+        }
+
+        function doneLoading() {
+            girl = new PIXI.Sprite.from(app.loader.resources["idle"].texture);
+            girl.anchor.set(0.5);
+            girl.x = app.view.width / 2;
+            girl.y = app.view.height / 2;
+
+            girl.interactive = true;
+            girl.buttonMode = true;
+
+            girl.on("pointerup", doPointerUp);
+            girl.on("pointerupoutside", doPointerUpOutside);
+            girl.on("pointerover", doPointerOver);
+            girl.on("pointerdown", doPointerDown);
+            girl.on("pointerout", doPointerOut);
+
+            app.stage.addChild(girl);
+        }
+
+        function doPointerUp() {
+            if(pointerIsOver){
+                girl.texture = app.loader.resources["over"].texture;
+            }else {
+                girl.texture = app.loader.resources["idle"].texture;
+            }
+            
+            pointerIsDown = false;
+        }
+
+        function doPointerUpOutside() {
+            girl.texture = app.loader.resources["idle"].texture;
+            pointerIsDown = false;
+            pointerIsOver = false;
+        }
+
+        function doPointerOver() {
+            pointerIsOver = true;
+            girl.texture = app.loader.resources["over"].texture;
+        }
+
+        function doPointerDown() {
+            pointerIsDown = true;
+            girl.texture = app.loader.resources["down"].texture;
+        }
+
+        function doPointerOut() {
+            if(!pointerIsDown){
+                girl.texture = app.loader.resources["idle"].texture;
+                pointerIsOver = false;
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="gameDiv"></dv>
+</body>
+</html>
